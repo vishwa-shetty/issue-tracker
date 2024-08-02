@@ -20,8 +20,8 @@ const NewIssuePage = () => {
     <form
       className="max-w-lg space-y-4"
       onSubmit={handleSubmit(async (data) => {
-        await axios.post("http://localhost:3000/api/issues", data);
-        route.push("/");
+        await axios.post("/api/issues", data);
+        route.push("/issues");
       })}
     >
       <h1>Add New Issue</h1>
