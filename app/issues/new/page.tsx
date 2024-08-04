@@ -17,6 +17,8 @@ import { MdError } from "react-icons/md";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createIssueSchema } from "@/app/validationSchemas";
 import { z } from "zod";
+import ErrorMessages from "@/app/components/ErrorMessages";
+import Spinner from "@/app/components/Spinner";
 
 type IssueForm = z.infer<typeof createIssueSchema>;
 
@@ -32,58 +34,56 @@ const NewIssuePage = () => {
   const route = useRouter();
 
   const [error, setError] = useState("");
+  const [isSubmitting, setSubmitting] = useState(false);
 
   const onSubmit = async (data: IssueForm) => {
-    console.log("enter");
     try {
+      setSubmitting(true);
       await axios.post("/api/issues", data);
+      setSubmitting(false);
       route.push("/issues");
     } catch (error) {
+      setSubmitting(false);
+
       setError("An unexpected error occured");
     }
   };
 
   return (
-    <div className="max-w-lg space-y-4">
-      {error && (
-        <Callout.Root color="red">
-          <CalloutIcon>
-            <MdError />
-          </CalloutIcon>
-          <Callout.Text>{error}</Callout.Text>
-        </Callout.Root>
-      )}
-      <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-        <h1>Add New Issue</h1>
-        <TextField.Root>
-          <TextField.Input placeholder="Title" {...register("title")} />
-        </TextField.Root>
-        {errors?.title && (
-          <Text color="red" as="p">
-            {errors?.title?.message}
-          </Text>
+    <>
+      {isSubmitting && <Spinner />}
+      <div className="max-w-lg space-y-4">
+        {error && (
+          <Callout.Root color="red">
+            <CalloutIcon>
+              <MdError />
+            </CalloutIcon>
+            <Callout.Text>{error}</Callout.Text>
+          </Callout.Root>
         )}
-        <Controller
-          name="description"
-          control={control}
-          render={({ field }) => (
-            <SimpleMDE placeholder="Description" {...field} />
-          )}
-        />
-        {errors?.description && (
-          <Text color="red" as="p">
-            {errors?.description?.message}
-          </Text>
-        )}
-
-        <div className="space-x-2">
-          <Button>Add New Issue</Button>
-          <Button color="gray" variant="outline">
-            <Link href={"/"}>Back to Dashboard</Link>
-          </Button>
-        </div>
-      </form>
-    </div>
+        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+          <h1>Add New Issue</h1>
+          <TextField.Root>
+            <TextField.Input placeholder="Title" {...register("title")} />
+          </TextField.Root>
+          <ErrorMessages>{errors?.title?.message}</ErrorMessages>
+          <Controller
+            name="description"
+            control={control}
+            render={({ field }) => (
+              <SimpleMDE placeholder="Description" {...field} />
+            )}
+          />
+          <ErrorMessages>{errors?.description?.message}</ErrorMessages>
+          <div className="space-x-2">
+            <Button>Add New Issue</Button>
+            <Button color="gray" variant="outline">
+              <Link href={"/"}>Back to Dashboard</Link>
+            </Button>
+          </div>
+        </form>
+      </div>
+    </>
   );
 };
 
