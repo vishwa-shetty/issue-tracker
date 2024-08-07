@@ -41,7 +41,7 @@ const NewIssuePage = () => {
       setSubmitting(true);
       await axios.post("/api/issues", data);
       setSubmitting(false);
-      route.push("/issues");
+      route.push("/");
     } catch (error) {
       setSubmitting(false);
 

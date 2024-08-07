@@ -17,6 +17,6 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
-  const getIssue = await prisma.issue.findMany({});
+  const getIssue = await prisma.issue.findMany();
   return NextResponse.json(getIssue, { status: 200 });
 }
