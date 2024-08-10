@@ -1,11 +1,5 @@
 "use client";
-import {
-  Button,
-  Callout,
-  CalloutIcon,
-  Text,
-  TextField,
-} from "@radix-ui/themes";
+import { Button, Callout, CalloutIcon, TextField } from "@radix-ui/themes";
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import Link from "next/link";
@@ -41,17 +35,16 @@ const NewIssuePage = () => {
       setSubmitting(true);
       await axios.post("/api/issues", data);
       setSubmitting(false);
-      route.push("/");
+      route.push("/issues");
+      // eslint-disable-next-line no-unused-vars
     } catch (error) {
       setSubmitting(false);
-
       setError("An unexpected error occured");
     }
   };
 
   return (
     <>
-      {isSubmitting && <Spinner />}
       <div className="max-w-lg space-y-4">
         {error && (
           <Callout.Root color="red">
@@ -76,7 +69,9 @@ const NewIssuePage = () => {
           />
           <ErrorMessages>{errors?.description?.message}</ErrorMessages>
           <div className="space-x-2">
-            <Button>Add New Issue</Button>
+            <Button disabled={isSubmitting}>
+              Add New Issue {isSubmitting && <Spinner />}
+            </Button>
             <Button color="gray" variant="outline">
               <Link href={"/"}>Back to Dashboard</Link>
             </Button>
