@@ -1,11 +1,12 @@
 import prisma from "@/prisma/client";
 import { Table } from "@radix-ui/themes";
-import IssueStatusBadge from "../components/IssueStatusBadge";
 import IssueActions from "./IssueActions";
-import Link from "../components/Link";
+import { Link, IssueStatusBadge } from "../components";
+import DeleteIssueButton from "./DeleteIssueButton";
 
 export default async function Home() {
   const issues = await prisma.issue.findMany();
+
   return (
     <div>
       <IssueActions />
@@ -18,6 +19,9 @@ export default async function Home() {
             </Table.ColumnHeaderCell>
             <Table.ColumnHeaderCell className="hidden md:table-cell">
               Created
+            </Table.ColumnHeaderCell>
+            <Table.ColumnHeaderCell className="hidden md:table-cell">
+              Delete the Issue
             </Table.ColumnHeaderCell>
           </Table.Row>
         </Table.Header>
@@ -35,6 +39,9 @@ export default async function Home() {
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
                 {issue.createdAt.toDateString()}
+              </Table.Cell>
+              <Table.Cell className="hidden md:table-cell">
+                <DeleteIssueButton />
               </Table.Cell>
             </Table.Row>
           ))}
