@@ -13,17 +13,18 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { MdError } from "react-icons/md";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createIssueSchema } from "@/app/validationSchemas";
+import { issueSchema } from "@/app/validationSchemas";
 import { z } from "zod";
-import { Spinner, ErrorMessages, Link } from "@/app/components";
+import { Spinner, ErrorMessages } from "@/app/components";
 import dynamic from "next/dynamic";
 import { Issue } from "@prisma/client";
+import BackToIssueButton from "../BackToIssueButton";
 
 const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
   ssr: false,
 });
 
-type IssueFormData = z.infer<typeof createIssueSchema>;
+type IssueFormData = z.infer<typeof issueSchema>;
 
 const IssueForm = ({ issue }: { issue?: Issue }) => {
   const {
@@ -32,7 +33,7 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
     handleSubmit,
     formState: { errors },
   } = useForm<IssueFormData>({
-    resolver: zodResolver(createIssueSchema),
+    resolver: zodResolver(issueSchema),
   });
   const route = useRouter();
 
@@ -42,7 +43,11 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
   const onSubmit = async (data: IssueFormData) => {
     try {
       setSubmitting(true);
-      await axios.post("/api/issues", data);
+      if (!issue) {
+        await axios.post("/api/issues", data);
+      } else {
+        await axios.patch(`/api/issues/edit/${issue?.id}`, data);
+      }
       setSubmitting(false);
       route.push("/issues");
       // eslint-disable-next-line no-unused-vars
@@ -63,7 +68,7 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
           </Callout.Root>
         )}
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-          <Heading>{issue ? "Add New Issue" : "Edit this issue"}</Heading>
+          <Heading>{!issue ? "Add New Issue" : "Edit this issue"}</Heading>
           <TextField.Root>
             <TextField.Input
               defaultValue={issue?.title}
@@ -86,9 +91,7 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
               {!issue ? "Add New Issue" : "Edit this issue"}
               {isSubmitting && <Spinner />}
             </Button>
-            <Button color="gray" variant="outline">
-              <Link href={"/"}>Back to Dashboard</Link>
-            </Button>
+            <BackToIssueButton />
           </div>
         </form>
       </div>
