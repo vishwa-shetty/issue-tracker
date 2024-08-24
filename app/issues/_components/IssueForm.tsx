@@ -50,6 +50,7 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
       }
       setSubmitting(false);
       route.push("/issues");
+      route.refresh();
       // eslint-disable-next-line no-unused-vars
     } catch (error) {
       setSubmitting(false);
