@@ -19,14 +19,14 @@ const IssuesDetails = async ({ params }: Props) => {
 
   if (!issues) notFound();
   return (
-    <Grid columns={{ initial: "1", md: "2" }} gap="2">
-      <Box>
+    <Grid columns={{ initial: "1", sm: "5" }} gap="2">
+      <Box className="md:col-span-4">
         <IssueDetailsPage issues={issues} />
       </Box>
-      <Box className="max-w-sm">
+      <Box className="max-w-lg">
         <Flex direction="column" gap="2">
           <EditIssueButton issueId={issues?.id} />
-          <DeleteIssueButton />
+          <DeleteIssueButton issueId={issues?.id} />
           <BackToIssueButton />
         </Flex>
       </Box>

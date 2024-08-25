@@ -40,7 +40,7 @@ const IssuesPage = async () => {
                 {issue.createdAt.toDateString()}
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
-                <DeleteIssueButton />
+                <DeleteIssueButton issueId={issue.id} />
               </Table.Cell>
             </Table.Row>
           ))}
