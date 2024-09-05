@@ -4,9 +4,8 @@ import { Link, IssueStatusBadge } from "../components";
 import DeleteIssueButton from "./DeleteIssueButton";
 import AddIssueButton from "./AddIssueButton";
 
-export default async function Home() {
+const IssuesPage = async () => {
   const issues = await prisma.issue.findMany();
-
   return (
     <div>
       <AddIssueButton />
@@ -41,7 +40,7 @@ export default async function Home() {
                 {issue.createdAt.toDateString()}
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
-                <DeleteIssueButton />
+                <DeleteIssueButton issueId={issue.id} />
               </Table.Cell>
             </Table.Row>
           ))}
@@ -49,4 +48,7 @@ export default async function Home() {
       </Table.Root>
     </div>
   );
-}
+};
+// export const dynamic = "force-dynamic";
+// export const revalidate = 0;
+export default IssuesPage;

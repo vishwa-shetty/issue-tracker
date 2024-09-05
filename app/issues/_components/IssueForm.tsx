@@ -16,13 +16,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { issueSchema } from "@/app/validationSchemas";
 import { z } from "zod";
 import { Spinner, ErrorMessages } from "@/app/components";
-import dynamic from "next/dynamic";
 import { Issue } from "@prisma/client";
 import BackToIssueButton from "../BackToIssueButton";
-
-const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
-  ssr: false,
-});
+import SimpleMDE from "react-simplemde-editor";
 
 type IssueFormData = z.infer<typeof issueSchema>;
 
@@ -46,10 +42,11 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
       if (!issue) {
         await axios.post("/api/issues", data);
       } else {
-        await axios.patch(`/api/issues/edit/${issue?.id}`, data);
+        await axios.patch(`/api/issues/${issue?.id}`, data);
       }
       setSubmitting(false);
       route.push("/issues");
+      route.refresh();
       // eslint-disable-next-line no-unused-vars
     } catch (error) {
       setSubmitting(false);

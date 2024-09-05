@@ -9,7 +9,7 @@ export default [
   ...tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
   {rules: {
-    "no-unused-vars": "error",
+    "no-unused-vars": ["error", { "vars": "local" }],
     "@typescript-eslint/no-unused-vars": "off",
     "react/react-in-jsx-scope": "off"
 }},
